@@ -1,0 +1,57 @@
+services:
+
+  notification:
+    build: .
+    container_name: notification
+    volumes:
+      - .:/code/
+
+    ports:
+      - 8003:8003
+    restart: always
+
+  notif_celery:
+    container_name: notif_celery
+    build: .
+    command: celery -A config worker -l INFO
+
+    environment:
+      - C_FORCE_ROOT="true"
+
+    restart: always
+    volumes:
+      - .:/code/
+
+
+
+  notif_flower:
+    container_name: notif_flower
+    build: .
+    command: celery -A config flower
+
+    ports:
+      - 5556:5555
+    depends_on:
+      - notif_celery
+    volumes:
+      - flower_data:/flower_data
+    restart: always
+
+  notif_rabbitmq_queue:
+    container_name: notif_rabbitmq_queue
+    build: .
+    command: python consumer.py
+    volumes:
+      - .:/code/
+
+    depends_on:
+      - notification
+    restart: always
+
+
+volumes:
+
+  flower_data:
+
+
+
