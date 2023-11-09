@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -22,6 +23,16 @@ class Settings(BaseSettings):
 
     ELASTIC_HOST: str
     ELASTIC_PORT: int
+
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: int
+
+    QUEUE_NAME_LIST: List
+
+    PODCAST_USER_BOOKMARKED_CHANNEL_URL: str
+
+    ACCOUNT_GET_USER_EMAIL_URL: str
+    NOTIFICATION_RSS_UPDATE_NOTIF_URL: str
 
     model_config = SettingsConfigDict(env_file=".env")
 
