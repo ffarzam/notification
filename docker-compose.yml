@@ -37,6 +37,16 @@ services:
       - flower_data:/flower_data
     restart: always
 
+  notif_rabbitmq_queue:
+    container_name: notif_rabbitmq_queue
+    build: .
+    command: python consumer.py
+    volumes:
+      - .:/code/
+
+    depends_on:
+      - notification
+    restart: always
 
 
 volumes:
