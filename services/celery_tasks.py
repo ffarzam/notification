@@ -1,3 +1,5 @@
+import asyncio
+
 from celery import shared_task
 
 from config.celery import CustomTask
@@ -15,5 +17,15 @@ class BaseTaskWithRetry(CustomTask):
 
 @shared_task(base=BaseTaskWithRetry)
 def send_email_task(email, random_number, action, _):
-    send_email(email, random_number, action)
+    async def async_func():
+        await send_email([email], random_number, action)
+    asyncio.run(async_func())
+    return True
+
+
+@shared_task(base=BaseTaskWithRetry)
+def send_rss_update_notification_email_task(emails, channel_name, action, _):
+    async def async_func():
+        await send_email(emails, channel_name, action)
+    asyncio.run(async_func())
     return True
